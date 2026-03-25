@@ -1,0 +1,55 @@
+x-redash-env: &redash-env
+  REDASH_DATABASE_URL: "postgresql://postgres:redash@postgres/redash"
+  REDASH_REDIS_URL: "redis://redis:6379/0"
+  REDASH_COOKIE_SECRET: "c292c2292c2292c2292c2292c2292c22"
+
+x-redash-base: &redash-base
+  build: .
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  environment:
+    <<: *redash-env
+  restart: unless-stopped
+
+services:
+  server:
+    <<: *redash-base
+    command: npm run dev
+    ports:
+      - "5000:5000"
+
+  worker:
+    <<: *redash-base
+    command: npm run worker
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: redash
+      POSTGRES_DB: redash
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
+  redis_data:
