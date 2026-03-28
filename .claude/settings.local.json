@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm show:*)",
+      "Read(//c/**)",
+      "Read(//mnt/**)",
+      "Bash(mount)",
+      "Bash(find /workspaces/redash-ts/src -maxdepth 1 -name redash -o -name *.yml -o -name *.yaml)",
+      "Bash(find /workspaces/redash-ts -maxdepth 3 -name docker-compose*)",
+      "Bash(docker compose:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep -n \"sendMail\\\\|export.*sendMail\" /workspaces/redash-ts/src/tasks/*.ts)",
+      "Bash(curl -s http://localhost:5000/api/session)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(curl -s http://localhost:5000/api/config)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git:*)"
+    ]
+  }
+}
